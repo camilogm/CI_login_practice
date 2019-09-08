@@ -203,7 +203,7 @@ class login extends CI_Model
         // $mail->Port='465';
         // $mail->isHTML();
         // $mail->Username='';
-        // $mail->Password='';
+        // $mail->Password='lirycgdnkwahynku';
         // $mail->SetFrom('no-replay@CC.org');
         // $mail->Subject='Autenticación de la cuenta';
         // $mail->Body=$message;

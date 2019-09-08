@@ -56,7 +56,10 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['login']='Admin/LoginController/index';
 $route['login/registrarse']='Admin/LoginController/register';
+$route['login/verificarcuenta/(:any)']='Admin/LoginController/ConfirmEmail/$1';
+
 
 
 $route['usuarios']='Admin/UsersController/index';
 $route['usuarios/crear']='Admin/UsersController/create';
+

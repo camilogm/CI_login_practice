@@ -8,10 +8,10 @@
             </div>
 
             <div class="col-lg-6"> 
-            <?php echo form_open('login/registrarse'); ?>                     
+            <?php echo form_open('login/registrarse',array('autocomplete'=>'off')); ?>                     
                 <div class="form-group">                
                     <div>
-                        <?= form_input(array('name'=>'Credential','type'=>'text','placeholder','placeholder'=>'Ingrese su nombre de usuario','class'=>'form-control')) ?>
+                        <?= form_input(array('name'=>'Credential','type'=>'email','placeholder','placeholder'=>'Ingrese su correo electrónico','class'=>'form-control')) ?>
                     </div>
                 </div>
                 <div class="form-group">                    
@@ -38,8 +38,7 @@
                         <i class="fab fa-google fa-fw"></i> 
                         Login with Google
                     </a>
-                </div>
-                
+                </div>                
                 <div class="form-group">
                     <a href="index.html" class="btn btn-facebook btn-user btn-block">
                         <i class="fab fa-facebook-f fa-fw"></i> 

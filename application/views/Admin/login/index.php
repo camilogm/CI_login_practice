@@ -10,7 +10,7 @@
         </div>
         <div clss="col-lg-6">
         <h1>Ingresa a tu cuenta</h1>
-            <?php echo form_open('login'); ?>
+            <?php echo form_open('login',array('autocomplete'=>'off')); ?>
             <div class="form-group">
                 <div class="form-group">
                     <div >

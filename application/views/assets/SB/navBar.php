@@ -17,10 +17,10 @@
             <a class="nav-link" href="#">Contact</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="login">Entrar</a>
+            <a class="nav-link" href="<?= base_url()?>login">Entrar</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="login/registrarse">Registrarse</a>
+            <a class="nav-link" href="<?= base_url()?>login/registrarse">Registrarse</a>
           </li>
 
         </ul>

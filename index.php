@@ -238,6 +238,16 @@ switch (ENVIRONMENT)
 
 	define('SYSAUTH','UserAuth');
 	define('SYSPASS','Password');
+	define('DBTables',array(
+		'User'=>'User',
+		'Role'=>'Role',
+		'Permission'=>'Permission',
+		'DPBR'=>'DPBR',
+		'tokenuser'=>'tokenuser',
+		'ANI'=>'AccountNotIdentified'
+	));
+
+
 
 
 	// The path to the "application" directory

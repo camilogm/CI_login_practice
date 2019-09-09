@@ -244,7 +244,8 @@ switch (ENVIRONMENT)
 		'Permission'=>'Permission',
 		'DPBR'=>'DPBR',
 		'tokenuser'=>'tokenuser',
-		'ANI'=>'AccountNotIdentified'
+		'ANI'=>'AccountNotIdentified',
+		'ChangePassword'=>'ChangePassword'
 	));
 
 

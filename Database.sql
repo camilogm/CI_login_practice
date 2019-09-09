@@ -38,6 +38,14 @@ Token varchar(20),
 INDEX FK_ANI_User (User_Id),
 FOREIGN KEY (User_Id) REFERENCES User (User_Id) ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS ChangePassword
+(
+User_Id int,
+Token varchar(255),
+DateI timestamp,
+INDEX FK_CP_User (User_id),
+FOREIGN KEY (User_Id) REFERENCES User (User_Id)
+);
 CREATE TABLE IF NOT EXISTS tokenuser 
 ( 
 User_Id int, 
@@ -45,3 +53,10 @@ Token varchar(255),
 INDEX FK_token_user (User_Id), 
 FOREIGN KEY (User_Id) REFERENCES user (User_Id) 
 );
+CREATE EVENT DeleteChangesPassword
+    ON SCHEDULE
+      EVERY 5 MINUTE 
+    DO
+      DELETE FROM ChangePassword WHERE UNIX_TIMESTAMP(`DateI`) < (UNIX_TIMESTAMP()-(1/30)*3600);	
+DELIMITER ;
+SET GLOBAL event_scheduler=ON;

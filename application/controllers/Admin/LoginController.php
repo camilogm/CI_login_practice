@@ -79,30 +79,73 @@ class LoginController extends CI_Controller
     public function ConfirmEmail($TokenConfirm=false)
     {
         if ($TokenConfirm==false)
-            show_404();
+            $data['Message']=false;
 
         if ($this->login->ConfirmEmail($TokenConfirm))
-            echo "si";
+            $data['Message']=true;
         else
-            echo "no";
+            $data['Message']=false;
         
-        die();
-
-
-
+        
+        $this->load->LayoutView(array('Admin/login/ConfirmEmail'=>$data));
     }
-
+    public function AskConfirmEmail()
+    {
+        $this->form_validation->set_rules('Credential','Credential','required');
+        
+        $data['Message']='null';
+        
+        if ($this->form_validation->run()===TRUE)
+        {
+            $data['Message']=$this->login->sendConfirmEmail();         
+        }
+        $this->load->LayoutView(array('Admin/login/AskConfirmEmail'=>$data));
+    }
 
     public function forgotPassword()
     {
-
-
+        $this->form_validation->set_rules('Credential','Credential','required');        
+        $data['Message']='null';        
+        if ($this->form_validation->run()===TRUE)
+        {
+            $data['Message']=$this->login->sendRestartPassword();         
+        }
+        $this->load->LayoutView(array('Admin/login/AskPassword'=>$data));
     }
-    public function changePassword()
+
+    public function changePassword($Token=false)
     {
+        $data['Message']='null';
+        if ($Token==false)
+            $data['Message']='false';
+        
+       
+        $data['Token']=$Token;
 
+        $this->form_validation->set_rules('Password','Password','required');
+        $this->form_validation->set_rules('PasswordConf','PasswordConf','required|matches[Password]');
+        
+        $aux=false;
+        if ($this->form_validation->run()===true )
+        {
+          
+
+            $data['Message']=$this->login->resetPassword($Token);
+            $aux=true;
+            
+        }
+        
+        if (!$this->login->confirmTokenPassword($Token) && $aux==false)
+            $data['Message']='false';
+
+      
+
+        $this->load->LayoutView(array('Admin/login/ChangePassword'=>$data));
+
+        
 
     }
+
 
 }
 

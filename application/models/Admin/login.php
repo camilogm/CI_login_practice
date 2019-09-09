@@ -84,7 +84,7 @@ class login extends CI_Model
             
 
         $this->db->where('token',$token);
-        $query=$this->db->get(DBTables['TK']);
+        $query=$this->db->get(DBTables['tokenuser']);
         $tokenData=$query->row_array();
             if ($tokenData!=null)
             {
@@ -166,12 +166,93 @@ class login extends CI_Model
 
 
     $this->db->insert(DBTables['ANI'],$ANIData);
-    $this->SendEmailConfirmation($UserData,$ANIData['Token']);   
+    
+    $URLConfirmation=base_url().'login/verificarcuenta/'.$ANIData['Token'];
+    $message = "¡Bienvenido a  LoginPhp!Puedes autenticar tu cuenta ingresando a\n$URLConfirmation";
+    $subject='Autenticación de la cuenta';
+
+
+    $this->SendEmailConfirmation($UserData[SYSAUTH],$message,$subject);   
     
     return true;
     }
 
-    private function SendEmailConfirmation($UserData,$Token)
+    public function sendConfirmEmail()
+    {
+        $this->db->where(SYSAUTH,$this->input->post('Credential'));
+        $UserData=($this->db->get(DBTables['User']))->row_array();
+
+        if ($UserData['ConfirmEmail']==true)
+            return 'ver';
+
+          
+        if ($UserData!=null)
+        {
+            $this->db->where('User_id',$UserData['User_Id']);
+            $this->db->delete(DBTables['ANI']);
+
+            $ANIData=array(
+                'User_Id'=>$UserData['User_Id'],
+                'Token'=>$this->randomToken(15)
+            );
+
+            $this->db->insert(DBTables['ANI'],$ANIData);
+
+          $URLConfirmation=base_url().'login/verificarcuenta/'.$ANIData['Token'];
+          $message = "¡Hola de nuevo!Puedes autenticar tu cuenta ingresando a\n$URLConfirmation";
+          $subject='Autenticación de la cuenta';
+
+ 
+          $this->SendEmailConfirmation($UserData[SYSAUTH],$message,$subject);   
+
+            return 'true';
+        }
+        else
+            return 'false';
+    }
+
+    public function sendRestartPassword()
+    {
+        $this->db->where(SYSAUTH,$this->input->post('Credential'));
+        $UserData=($this->db->get(DBTables['User']))->row_array();
+
+        
+        if ($UserData!=null)
+        {
+            $this->db->where('User_id',$UserData['User_Id']);
+            $this->db->delete(DBTables['ANI']);
+
+
+            $GToken=password_hash($this->randomToken(255),PASSWORD_ARGON2I);
+            $Vec=explode('$argon2i$v=19$m=1024,t=2,p=2$',$GToken);   
+            
+            $Token=$Vec[1];            
+            $Token=str_replace('/','-',$Token);
+            $Token=str_replace('$','_',$Token);
+
+        
+            $ChangePasswordData=array(
+                'User_Id'=>$UserData['User_Id'],
+                'Token'=>$Token
+            );
+
+                   
+            $this->db->insert(DBTables['ChangePassword'],$ChangePasswordData);
+
+            $URLConfirmation=base_url().'login/cambiarpass/'.$ChangePasswordData['Token'];
+            $message = "¡Hola de nuevo!Puedes cambiar la contraseña de  tu cuenta ingresando a  <br/> <a href='$URLConfirmation'>este link</a>";
+            $subject='Restablecimiento de contraseña';   
+            $this->SendEmailConfirmation($UserData[SYSAUTH],$message,$subject);   
+
+        
+            return 'true';
+        }
+        else
+            return 'false';
+    }
+
+
+    private function SendEmailConfirmation($EmailToSend='',$message='',$subject='')
     {
         $config = Array(
             'protocol' => 'smtp',
@@ -183,15 +264,14 @@ class login extends CI_Model
             'charset' => 'utf-8',
             'wordwrap' => TRUE
         );        
+   
         
-        $URLConfirmation=base_url().'login/verificarcuenta/'.$Token;
-
-        $message = "¡Bienvenido a  LoginPhp!Puedes autenticar tu cuenta ingresando a\n$URLConfirmation";
+   
         $this->load->library('email', $config);
         $this->email->set_newline("\r\n");
-        $this->email->from('kikorial1234@gmail.com');
-        $this->email->to($UserData[SYSAUTH]);
-        $this->email->subject('Autenticación de la cuenta');
+        $this->email->from('');
+        $this->email->to($EmailToSend);
+        $this->email->subject($subject);
         $this->email->message($message);
         $this->email->send();
                
@@ -203,7 +283,7 @@ class login extends CI_Model
         // $mail->Port='465';
         // $mail->isHTML();
         // $mail->Username='';
-        // $mail->Password='lirycgdnkwahynku';
+        // $mail->Password='';
         // $mail->SetFrom('no-replay@CC.org');
         // $mail->Subject='Autenticación de la cuenta';
         // $mail->Body=$message;
@@ -228,14 +308,59 @@ class login extends CI_Model
             return false;
 
         $UserData['ConfirmEmail']=TRUE;
+        $this->db->where('User_Id',$UserData['User_Id']);
+        $this->db->update(DBTables['User'],$UserData);
+        $this->db->where('Token',$TokenConfirmation);
+        $this->db->delete(DBTables['ANI']);
+        return true;
+    }
 
+    public function confirmTokenPassword($Token=false)
+    {
+        
+       
+        
+        $this->db->where('Token',$Token);
+        $TokenCP=($this->db->get(DBTables['ChangePassword']))->row_array();
+
+      
+        if ($TokenCP==NULL)
+            return false;
+        else
+            return true;
+
+    }
+
+    public function resetPassword($Token=false)
+    {
+        if($Token==false)
+            return 'false';
+
+        $this->db->where('Token',$Token);
+        $User_Id=(($this->db->get(DBTables['ChangePassword']))->row_array())['User_Id'];
+
+       
+        if ($User_Id==null)
+            return 'false';
+        
+
+         
+        $this->db->where('User_Id',$User_Id);
+        $UserData=($this->db->get(DBTables['User']))->row_array();
+
+        if ($UserData==null)
+            return 'false';
+
+        
+        $UserData[SYSPASS]=password_hash($this->input->post('Password'),PASSWORD_ARGON2I);        
         $this->db->where('User_Id',$UserData['User_Id']);
         $this->db->update(DBTables['User'],$UserData);
 
-        $this->db->where('Token',$TokenConfirmation);
-        $this->db->delete(DBTables['ANI']);
+        $this->db->where('User_Id',$UserData['User_Id']);
+        $this->db->delete(DBTables['ChangePassword']);
 
-        return true;
+
+        return 'true';
 
 
     }

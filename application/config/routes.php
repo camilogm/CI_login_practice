@@ -53,13 +53,15 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-
 $route['login']='Admin/LoginController/index';
 $route['login/registrarse']='Admin/LoginController/register';
 $route['login/verificarcuenta/(:any)']='Admin/LoginController/ConfirmEmail/$1';
-
+$route['login/solicitarverificacion']='Admin/LoginController/AskConfirmEmail';
+$route['login/recuperarpass']='Admin/LoginController/forgotPassword';
+$route['login/cambiarpass/(:any)']='Admin/LoginController/changePassword/$1';
 
 
 $route['usuarios']='Admin/UsersController/index';
 $route['usuarios/crear']='Admin/UsersController/create';
+
 

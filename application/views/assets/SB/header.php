@@ -12,7 +12,7 @@ $this->load->helper('url');
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Full Width Pics - Start Bootstrap Template</title>
+  <title>Login </title>
 
   <!-- Bootstrap core CSS -->
   <link href="<?= base_url()?>assets/SB/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

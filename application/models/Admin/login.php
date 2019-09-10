@@ -7,13 +7,14 @@ defined('SYSPASS') or exit('NAN');
 defined('DBTables') or exit('NAN');
 
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
 
 
-require 'PHPMailer\src\PHPMailer.php';
-require 'PHPMailer\src\Exception.php';
-require 'PHPMailer\src\SMTP.php';
+// require 'PHPMailer\src\PHPMailer.php';
+// require 'PHPMailer\src\Exception.php';
+// require 'PHPMailer\src\SMTP.php';
+
 
 
 class login extends CI_Model
@@ -162,9 +163,6 @@ class login extends CI_Model
         'User_Id'=>$User_Id,
         'Token'=>$this->randomToken(15)
     );
-
-
-
     $this->db->insert(DBTables['ANI'],$ANIData);
     
     $URLConfirmation=base_url().'login/verificarcuenta/'.$ANIData['Token'];
@@ -172,11 +170,56 @@ class login extends CI_Model
     $subject='Autenticación de la cuenta';
 
 
-    $this->SendEmailConfirmation($UserData[SYSAUTH],$message,$subject);   
+    $this->SendEmail($UserData[SYSAUTH],$message,$subject);   
     
     return true;
     }
 
+    public function SignIn_Google($UserInfo=null)
+    {
+        if ($UserInfo==null)
+            return false;
+
+        $this->db->where(SYSAUTH,$UserInfo['email']);
+        $UserId=(($this->db->get(DBTables['User']))->row_array())['User_Id'];
+    
+        if ($UserId!=null)
+        {
+            $this->setTokenUser($UserId,$this->randomToken());
+            redirect();
+
+        }
+            
+
+
+
+        $pass=$this->randomToken(16);
+        $UserData=array(
+            SYSAUTH=>$UserInfo['email'],
+            SYSPASS=>password_hash($pass,PASSWORD_ARGON2I),
+            'ConfirmEmail'=>TRUE
+        );
+
+        $this->db->insert(DBTables['User'],$UserData);
+
+        $this->db->where(SYSAUTH,$UserData[SYSAUTH]);
+        $UserId=(($this->db->get(DBTables['User']))->row_array())['User_Id'];
+
+        if ($UserId==null)
+            return false;
+
+
+        $message="¡Bienvenido a LoginPhp!<br>Se ha registrado tu cuenta usando gmail";
+        $message=$message."se estableció tu contraseña automáticamente como: ".$pass;
+        $subject='Se ha creado tu cuenta';
+
+        $this->SendEmail($UserData[SYSAUTH],$message,$subject);
+        $this->setTokenUser($UserId,$this->randomToken());
+        return true;
+
+    }
+
+    //cuando se solicita
     public function sendConfirmEmail()
     {
         $this->db->where(SYSAUTH,$this->input->post('Credential'));
@@ -203,7 +246,7 @@ class login extends CI_Model
           $subject='Autenticación de la cuenta';
 
  
-          $this->SendEmailConfirmation($UserData[SYSAUTH],$message,$subject);   
+          $this->SendEmail($UserData[SYSAUTH],$message,$subject);   
 
             return 'true';
         }
@@ -242,7 +285,7 @@ class login extends CI_Model
             $URLConfirmation=base_url().'login/cambiarpass/'.$ChangePasswordData['Token'];
             $message = "¡Hola de nuevo!Puedes cambiar la contraseña de  tu cuenta ingresando a  <br/> <a href='$URLConfirmation'>este link</a>";
             $subject='Restablecimiento de contraseña';   
-            $this->SendEmailConfirmation($UserData[SYSAUTH],$message,$subject);   
+            $this->SendEmail($UserData[SYSAUTH],$message,$subject);   
 
         
             return 'true';
@@ -252,7 +295,7 @@ class login extends CI_Model
     }
 
 
-    private function SendEmailConfirmation($EmailToSend='',$message='',$subject='')
+    private function SendEmail($EmailToSend='',$message='',$subject='')
     {
         $config = Array(
             'protocol' => 'smtp',
@@ -288,8 +331,7 @@ class login extends CI_Model
         // $mail->Subject='Autenticación de la cuenta';
         // $mail->Body=$message;
         // $mail->AddAddress($UserData[SYSAUTH]);
-        // $mail->Send(); 
-
+        // $mail->Send();
     }
 
 
@@ -364,6 +406,9 @@ class login extends CI_Model
 
 
     }
+
+
+
 
 
 

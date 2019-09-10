@@ -59,6 +59,7 @@ $route['login/verificarcuenta/(:any)']='Admin/LoginController/ConfirmEmail/$1';
 $route['login/solicitarverificacion']='Admin/LoginController/AskConfirmEmail';
 $route['login/recuperarpass']='Admin/LoginController/forgotPassword';
 $route['login/cambiarpass/(:any)']='Admin/LoginController/changePassword/$1';
+$route['login/signinGoogle']="Admin/LoginController/signIn_Google";
 
 
 $route['usuarios']='Admin/UsersController/index';

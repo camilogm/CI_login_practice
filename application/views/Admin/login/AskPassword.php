@@ -14,7 +14,7 @@
             <?= form_input(array('name'=>'Credential','type'=>'email','placeholder'=>'Ingrese su correo','class'=>'form-control')); ?>            
         </div>
         <div class="form-group">
-        <?= form_submit(array('name'=>'submit','value'=>'Enviar','class'=>'btn btn-primary btn-block btn-user'));?> 
+            <?= form_submit(array('name'=>'submit','value'=>'Enviar','class'=>'btn btn-primary btn-block btn-user'));?> 
         </div>
 
         <?= form_close();?>

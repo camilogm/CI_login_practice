@@ -30,9 +30,9 @@
             ?>
         </div>
         <div class="form-group">
-            <a href="index.html" class="btn btn-google btn-user btn-block">
+            <a href="<?=$GURL;?>" class="btn btn-google btn-user btn-block">
                 <i class="fab fa-google fa-fw"></i> 
-                Login with Google
+                Ingresar con google
             </a>
         </div>
         <div class="form-group">

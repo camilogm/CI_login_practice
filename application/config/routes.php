@@ -60,7 +60,13 @@ $route['login/solicitarverificacion']='Admin/LoginController/AskConfirmEmail';
 $route['login/recuperarpass']='Admin/LoginController/forgotPassword';
 $route['login/cambiarpass/(:any)']='Admin/LoginController/changePassword/$1';
 $route['login/signinGoogle']="Admin/LoginController/signIn_Google";
+$route['login/callbackFacebook']='Admin/LoginController/callback_Facebook';
+$route['login/signInFacebook']='Admin/LoginController/signIn_Facebook';
+$route['login/logout']='Admin/LoginController/logout';
+$route['login/permisos/(:any)']='Admin/LoginController/AskPermissions/$1';
 
+
+$route['usuarios/privacidad']='Admin/UsersController/PoliticaPrivacidad';
 
 $route['usuarios']='Admin/UsersController/index';
 $route['usuarios/crear']='Admin/UsersController/create';

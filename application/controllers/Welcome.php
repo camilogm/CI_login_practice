@@ -10,8 +10,8 @@ class Welcome extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Admin/login');
-		$this->login->verifyToken();
+		$this->load->model('Admin/Authcheck');
+		$this->Authcheck->verifyToken();
 
 	}
 
@@ -35,7 +35,7 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 
-		$this->load->LayoutView(
+		$this->load->LayoutView($this->Authcheck->get_UserConnected(),
 			array(
 				'assets/SB/content'=>null)
 			);

@@ -61,6 +61,25 @@ class login extends CI_Model
         return false;
     }
 
+    public function logout()
+    {
+        if (isset($_SESSION['MAUTH']))        
+        {     
+            $token=$_SESSION['MAUTH'];
+            $this->db->where('token',$token);
+            $this->db->delete(DBTables['tokenuser']);
+            session_unset('MAUTH');
+            
+            return true;
+        
+        
+        }
+         else 
+            return false;
+
+       
+    }
+
     //Estable el token de conexión al que estará enlazado el navegador
     private function setTokenUser($UserId,$Token)
     {
@@ -74,72 +93,7 @@ class login extends CI_Model
         $this->db->insert(DBTables['tokenuser'],$TokenData);
         $_SESSION['MAUTH']=$TokenEncode;        
     }
-    //Verifica que el token esté activo y los permisos de usuario
-    public function verifyToken($slug=false,$Permission='')
-    {    
-        if (isset($_SESSION['MAUTH']))        
-        $token=$_SESSION['MAUTH'];
-        else
-            return false;
-
-            
-
-        $this->db->where('token',$token);
-        $query=$this->db->get(DBTables['tokenuser']);
-        $tokenData=$query->row_array();
-            if ($tokenData!=null)
-            {
-                if ($slug==FALSE)
-                {
-                    $this->db->where('User_Id',$tokenData['User_Id']);
-                    $UserRol=(($this->db->get(DBTables['User']))->row_array())['Role_Id'];    
-
-                    
-                    if ($this->CheckPermission($UserRol,$Permission))
-                        return true;
-                    else
-                        redirect('');                
-                    
-                    return false;
-                }
-                else 
-                    redirect('');
-                
-            }
-            else
-            {
-                if ($slug==FALSE)
-                {
-                    session_unset('MAUTH');
-                    redirect('login');
-                }
-            }                     
-    }
-
-    private function CheckPermission($UserRol,$Permission)
-    {
-        $this->db->where('Permission_Id',$Permission);
-        $this->db->where('Role_Id',$UserRol);
-        
-        if (($query=$this->db->get(DBTables['DPBR'])->row_array())==null)
-            return true;
-        else
-            return false;
-
-
-
-
-    }
-
-
-
-
-    public function get_UserConnected()
-    {
-        $UserData=array();
-
-        return $UserData;
-    }
+  
 
 
     //registra usuario
@@ -175,7 +129,9 @@ class login extends CI_Model
     return true;
     }
 
-    public function SignIn_Google($UserInfo=null)
+   
+
+    public function SignIn_App($UserInfo=null,$App)
     {
         if ($UserInfo==null)
             return false;
@@ -208,8 +164,7 @@ class login extends CI_Model
         if ($UserId==null)
             return false;
 
-
-        $message="¡Bienvenido a LoginPhp!<br>Se ha registrado tu cuenta usando gmail";
+        $message="¡Bienvenido a LoginPhp!<br>Se ha registrado tu cuenta usando $App";
         $message=$message."se estableció tu contraseña automáticamente como: ".$pass;
         $subject='Se ha creado tu cuenta';
 
@@ -401,9 +356,7 @@ class login extends CI_Model
         $this->db->where('User_Id',$UserData['User_Id']);
         $this->db->delete(DBTables['ChangePassword']);
 
-
-        return 'true';
-
+        return 'true';        
 
     }
 

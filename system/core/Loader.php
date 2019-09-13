@@ -37,6 +37,7 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
 /**
  * Loader Class
  *
@@ -500,11 +501,13 @@ class CI_Loader {
 		return $this->_ci_load(array('_ci_view' => $view, '_ci_vars' => $this->_ci_prepare_view_vars($vars), '_ci_return' => $return));
 	}
 	
-	public function LayoutView($views=array())
+	public function LayoutView($dataHeader=array(),$views=array())
 	{
-		defined('Template');
+
+		$data['User']=$dataHeader;
+
 		$this->view('assets/SB/header');
-		$this->view('assets/SB/navBar');
+		$this->view('assets/SB/navBar',$data);
 		
 		foreach ($views as $view => $data)
 		{

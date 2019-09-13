@@ -5,7 +5,7 @@
     <div class="container">
       <div class="row">
       
-        <div class="col-lg-6">
+        <div class="col-lg-6 d-none d-lg-block">
             <img src="<?= base_url()?>assets/SB/img1.jpg" style="width:100%;height:100%;">
         </div>
         <div clss="col-lg-6">
@@ -36,9 +36,9 @@
             </a>
         </div>
         <div class="form-group">
-            <a href="index.html" class="btn btn-facebook btn-user btn-block">
+            <a href="<?=$FURL?>" class="btn btn-facebook btn-user btn-block">
                 <i class="fab fa-facebook-f fa-fw"></i> 
-                Login with Facebook
+                Ingresar con facebook
             </a>    
         </div>
         <div class="form-group">
@@ -50,7 +50,6 @@
    
     </div>
   </section>
-
 
 
   <section class="py-5"></section>  

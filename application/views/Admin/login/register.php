@@ -40,7 +40,7 @@
                     </a>
                 </div>                
                 <div class="form-group">
-                    <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                    <a href="<?=$FURL;?>" class="btn btn-facebook btn-user btn-block">
                         <i class="fab fa-facebook-f fa-fw"></i> 
                         registrarse 
                     </a>    

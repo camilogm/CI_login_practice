@@ -2,6 +2,7 @@
 
 application/cache/*
 !application/cache/index.html
+vendorFacebook/*
 
 application/logs/*
 !application/logs/index.html
